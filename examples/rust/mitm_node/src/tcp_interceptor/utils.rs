@@ -1,8 +1,12 @@
 use ockam_core::{Encodable, Result, TransportMessage};
-use ockam_transport_core::TransportError;
+use ockam_transport_core::{TransportError, MAXIMUM_MESSAGE_LENGTH};
 
 pub fn prepare_message(msg: TransportMessage) -> Result<Vec<u8>> {
     let mut msg_buf = msg.encode().map_err(|_| TransportError::SendBadMessage)?;
+
+    if msg_buf.len() > MAXIMUM_MESSAGE_LENGTH {
+        return Err(TransportError::Capacity.into());
+    }
 
     // Create a buffer that includes the message length in big endian
     let mut len = (msg_buf.len() as u16).to_be_bytes().to_vec();
@@ -18,4 +22,18 @@ pub fn prepare_message(msg: TransportMessage) -> Result<Vec<u8>> {
     msg_buf.reverse();
 
     Ok(msg_buf)
+}
+
+#[cfg(test)]
+mod test {
+    use ockam_core::route;
+
+    use super::{prepare_message, TransportMessage};
+
+    #[test]
+    fn prepare_message_should_discard_large_messages() {
+        let msg = TransportMessage::v1(route![], route![], vec![0; u16::MAX as usize + 1]);
+        let result = prepare_message(msg);
+        assert!(result.is_err());
+    }
 }

@@ -5,6 +5,9 @@ use ockam_core::{async_trait, Address, Result, TransportType};
 /// At minimum, a Transport must be able
 ///  - return its type
 ///  - instantiate workers for all the addresses with that transport type in a Route
+
+pub const MAXIMUM_MESSAGE_LENGTH: usize = (u16::MAX - 2) as usize; //  - 2 bytes for length
+
 #[async_trait]
 pub trait Transport: Send + Sync + 'static {
     /// Return the type of the Transport
