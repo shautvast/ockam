@@ -1,4 +1,3 @@
-use ockam_core::compat::boxed::Box;
 use ockam_core::{async_trait, Address, Result, TransportType};
 
 /// Generic representation of a Transport
@@ -6,8 +5,7 @@ use ockam_core::{async_trait, Address, Result, TransportType};
 ///  - return its type
 ///  - instantiate workers for all the addresses with that transport type in a Route
 
-pub const MAXIMUM_MESSAGE_LENGTH: usize = (u16::MAX - 2) as usize; //  - 2 bytes for length
-
+pub const MAXIMUM_MESSAGE_LENGTH: usize = u16::MAX as usize;
 #[async_trait]
 pub trait Transport: Send + Sync + 'static {
     /// Return the type of the Transport

@@ -237,7 +237,7 @@ impl Worker for TcpSendWorker {
 pub fn prepare_message(msg: TransportMessage) -> Result<Vec<u8>> {
     let mut msg_buf = msg.encode().map_err(|_| TransportError::SendBadMessage)?;
 
-    if msg_buf.len() > MAXIMUM_MESSAGE_LENGTH {
+    if msg_buf.len() > MAXIMUM_MESSAGE_LENGTH - 2 {
         return Err(TransportError::Capacity.into());
     }
 

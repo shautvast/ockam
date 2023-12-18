@@ -1,7 +1,7 @@
 use std::os::unix::net::SocketAddr;
 
 use ockam_core::{
-    async_trait, compat::sync::Arc, Address, AllowAll, Any, Decodable, DenyAll, Encodable, Error,
+    async_trait, compat::sync::Arc, Address, AllowAll, Any, Decodable, DenyAll, Encodable,
     LocalMessage, Mailbox, Mailboxes, Message, Result, Routed, TransportMessage, Worker,
 };
 use ockam_node::{Context, WorkerBuilder};
@@ -295,7 +295,7 @@ impl Worker for UdsSendWorker {
 fn prepare_message(msg: TransportMessage) -> Result<Vec<u8>> {
     let mut msg_buf = msg.encode().map_err(|_| TransportError::SendBadMessage)?;
 
-    if msg_buf.len() > MAXIMUM_MESSAGE_LENGTH {
+    if msg_buf.len() > MAXIMUM_MESSAGE_LENGTH - 2  {
         return Err(TransportError::Capacity.into());
     }
 
